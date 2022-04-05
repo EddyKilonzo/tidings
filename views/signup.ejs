@@ -1,0 +1,19 @@
+<%- include('partials/header') %>
+<%- include('partials/nav') %>
+    <form action="">
+        <p>Sign Up</p>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id=""><br>
+        <label for="fullname">Fullname:</label>
+        <input type="text" name="fullname" id=""> <br>
+        <label for="gender">Gender:</label>
+        <input type="radio" name="gender" value="male">Male 
+        <input type="radio" name="gender" value="female">Female <br>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id=""> <br>
+        <label for="confirm-password">Confirm Password:</label>
+        <input type="password" name="confirm-password" id=""> <br>
+        <button><a href="/signup">sign Up</a></button> <br>
+        <p>Alredy have an account? <a href="/login">Log In</a></p>
+    </form>
+<%- include('partials/footer') %>
