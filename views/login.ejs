@@ -1,12 +1,25 @@
 <%- include('partials/header') %>
-<%- include('partials/nav') %>
-    <form action="">
-        <p>Log In</p>
-        <label for="email">Email:</label>
-        <input type="email" name="email" id=""> <br>
-        <label for="password">Password:</label>
-        <input type="password" name="" id=""> <br>
-        <button>Log In</button>
-        <p>Don't have an account? <a href="/signup">Sign Up</a></p>
-    </form>
+
+    <main class="access-point">
+
+        <%- include('partials/nav') %>
+
+        <form action="/login" method="post">
+            <h2>Log In</h2>
+
+            <% if(error) { %>
+                <p style="color: red"><%= message %></p>
+            <% } %> 
+
+            <label for="">Email</label>
+            <input type="email" name="email" id="" value="<%= user.email %>" required>
+            <label for="">Password</label>
+            <input type="password" name="password" id="" value="<%= user.password %>" required>
+            <input type="submit" value="Log In">
+            <p>Don't have an account? <a href="/signup">Create One</a></p>
+        </form>
+
+
+    </main>
+
 <%- include('partials/footer') %>

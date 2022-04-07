@@ -1,19 +1,40 @@
 <%- include('partials/header') %>
-<%- include('partials/nav') %>
-    <form action="">
-        <p>Sign Up</p>
-        <label for="email">Email:</label>
-        <input type="email" name="email" id=""><br>
-        <label for="fullname">Fullname:</label>
-        <input type="text" name="fullname" id=""> <br>
-        <label for="gender">Gender:</label>
-        <input type="radio" name="gender" value="male">Male 
-        <input type="radio" name="gender" value="female">Female <br>
-        <label for="password">Password:</label>
-        <input type="password" name="password" id=""> <br>
-        <label for="confirm-password">Confirm Password:</label>
-        <input type="password" name="confirm-password" id=""> <br>
-        <button><a href="/signup">sign Up</a></button> <br>
-        <p>Alredy have an account? <a href="/login">Log In</a></p>
-    </form>
+
+    <main class="access-point">
+
+        <%- include('partials/nav') %>
+
+        <form action="/signup" method="post">
+            <h2>Sign Up</h2>
+
+            <% if(error) { %>
+                <p style="color: red"><%= message %></p>
+            <% } %>
+
+            <label for="">Email</label>
+            <input type="email" name="email" id="" value="<%= user.email %>" required>
+            <label for="">Fullname</label>
+            <input type="text" name="fullname" id="" value="<%= user.fullname %>" required>
+            <label for="">Gender</label>
+            <select name="gender" id="" required>
+                <% if(error) { %>
+                    <option value="<%= user.gender %>" selected><%= user.gender %></option>
+                <% } else { %> 
+                    <option value="">--Please choose an option--</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                <% } %>
+            </select>
+            <label for="">Password</label>
+            <input type="password" name="password" id="" value="<%= user.password %>" required>
+            <label for="">Confirm Password</label>
+            <input type="password" name="confirmPassword" id="" value="<%= user.confirmPassword %>" required>
+            <input type="submit" value="Create Account">
+            <p>Already have an account? <a href="/login">Log In</a></p>
+        </form>
+
+
+    </main>
+
 <%- include('partials/footer') %>
+     
