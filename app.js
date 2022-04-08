@@ -2,6 +2,7 @@ const express = require('express')
 const mysql = require('mysql')
 const bcrypt = require('bcrypt')
 const session = require('express-session')
+const { render } = require('ejs')
 
 const app = express()
 
@@ -12,9 +13,26 @@ const connection = mysql.createConnection({
     database: 'tidings'
 })
 
+
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(express.urlencoded({extended: false}))
+
+app.use(session({
+    secret: 'eddy',
+    resave: false,
+    saveUninitialized: false
+}))
+
+app.use((req, res, next) => {
+    if(req.session.userID === undefined) {
+        res.locals.isLoggedIn = false
+    } else {
+        res.locals.isLoggedIn = true;
+        res.locals.username = req.session.username;
+    }
+    next()
+})
 
 
 app.get('/', (req, res) => {
@@ -24,11 +42,35 @@ app.get('/', (req, res) => {
 app.get('/about', (req, res) => {
     res.render('about-us.ejs')
 })
+
 app.get('/new-tyd', (req, res) => {
-    res.render('new-tyd.ejs')
+    if(res.locals.isLoggedIn) {
+        res.render('new-tyd.ejs')
+    } else {
+        res.redirect('/login')
+    }
+})
+app.post('/new-tyd', (req, res) => {
+    connection.query(
+        'INSERT INTO tyds (tyd, userID) VALUES (?,?)',
+        [req.body.tyd, req.session.userID],
+        (error, results) => {
+            res.redirect('/tyds')
+        }
+    )
 })
 app.get('/tyds', (req, res) => {
-    res.render('tyds.ejs')
+    if(res.locals.isLoggedIn) {
+        connection.query(
+            'SELECT * FROM tyds JOIN users ON tyds.userID = users.id',
+            (error, results) => {
+                res.render('tyds.ejs', {tyds: results})
+            }
+        )
+    } else {
+        res.redirect('/login')
+    }
+    // console.log(tyd.dateposted.pop())
 })
 
 app.get('/login', (req, res) => {
@@ -51,13 +93,17 @@ app.post('/login', (req, res) => {
             if (results.length > 0) {
                 bcrypt.compare(user.password, results[0].password, (error, isEqual) => {
                     if(isEqual) {
-                        res.redirect('/')
+                        req.session.userID = results[0].id
+                        req.session.username = results[0].fullname.split(' ')[0].toLowerCase()
+                        res.redirect('/tyds')
                     } else {
                         let message = 'Email/Password mistmatch.'
-                        res.render('login.ejs', {error: true, message: message, user: user})
+                        res.render('login.ejs', {
+                            error: true,
+                            message: message,
+                            user: user})
                     }
                 })
-
             } else {
                 let message = 'Account does not exist. Please create one'
                 res.render('login.ejs', {error: true, message: message, user: user})
@@ -65,8 +111,13 @@ app.post('/login', (req, res) => {
         }
     )    
 
-
 })
+app.get('/logout', (req, res) => {
+    req.session.destroy((error) => {
+        res.redirect('/');
+    })
+});
+
 
 app.get('/signup', (req, res) => {
     let user = {
@@ -87,7 +138,6 @@ app.post('/signup', (req, res) => {
         password: req.body.password,
         confirmPassword: req.body.confirmPassword
     }
-
     if(user.password === user.confirmPassword) {
         connection.query(
             'SELECT email FROM users WHERE email = ?', [user.email],
@@ -104,7 +154,10 @@ app.post('/signup', (req, res) => {
                     })
                 } else {
                     let message = 'Email already exists.'
-                    res.render('signup.ejs', {error: true, message: message, user: user})
+                    res.render('signup.ejs', {
+                        error: true,
+                        message: message,
+                        user: user})
                 }
             }
         )
@@ -115,7 +168,6 @@ app.post('/signup', (req, res) => {
     }
 
 })
-
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
