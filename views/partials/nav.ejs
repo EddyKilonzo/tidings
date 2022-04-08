@@ -7,14 +7,17 @@
         <nav>
             <ul>
                 <li class="nav-link"> <a href="/about">About</a></li>
-                <li class="nav-link"> <a href="/tyds">Tyds</a></li>
-                <li class="nav-link"> <a href="/new-tyd"> + New Tyd</a></li>
-                <li class="nav-link"> <a href="/logout">Log Out</a></li>
-                <li class="nav-link"> <a href="/login">Log In</a> </li>
-                <li class="nav-link"> <a href="/signup">Sign Up</a> </li>
+                <% if(locals.isLoggedIn) { %>
+                    <li class="nav-link"> <a href="/tyds">Tyds</a></li>
+                    <li class="nav-link"> <a href="/new-tyd"> + New Tyd</a></li>
+                    <li class="nav-link"> <a href="/logout">Log Out</a></li>
+                <% } else {%>
+                    <li class="nav-link"> <a href="/login">Log In</a> </li>
+                    <li class="nav-link"> <a href="/signup">Sign Up</a> </li>
+                <% } %>
                    
             </ul>
         </nav>
         
     </header>
-    
+ 
