@@ -3,6 +3,7 @@ const mysql = require('mysql')
 const bcrypt = require('bcrypt')
 const session = require('express-session')
 const { render } = require('ejs')
+const { query } = require('express')
 
 const app = express()
 
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
         res.locals.isLoggedIn = false
     } else {
         res.locals.isLoggedIn = true;
+        res.locals.userID = req.session.userID;
         res.locals.username = req.session.username;
     }
     next()
@@ -60,18 +62,64 @@ app.post('/new-tyd', (req, res) => {
     )
 })
 app.get('/tyds', (req, res) => {
-    if(res.locals.isLoggedIn) {
+    if(res.locals.isLoggedIn) { 
         connection.query(
-            'SELECT * FROM tyds JOIN users ON tyds.userID = users.id',
+            'SELECT tyds.id as tydId,tyd,dateposted,fullname,likes,users.id as usersID FROM tyds JOIN users ON tyds.userID = users.id ORDER BY dateposted DESC',
             (error, results) => {
-                res.render('tyds.ejs', {tyds: results})
+                if(error){
+                    console.log(error)
+                }else{
+                    res.render('tyds.ejs', {tyds: results})
+                    // console.log(results)
+                }
             }
         )
     } else {
         res.redirect('/login')
     }
-    // console.log(tyd.dateposted.pop())
 })
+app.post('/updatelikes', (req, res) => {
+    let tydId = parseInt(req.query.tydId)
+    let userID = parseInt(req.query.userID)
+    console.log(userID)
+    console.log(tydId)
+    connection.query(
+        'SELECT * FROM likes WHERE tydId= ? AND userID=?',
+        [tydId,userID],
+        (error, likes) => {
+            if(error){
+                console.log(error)
+            } else {
+                if(likes.length > 0) {
+                    // remove from db
+                    connection.query(
+                        'DELETE FROM likes WHERE tydId =? AND userID =?',
+                        [tydId, userID],
+                        (error, results) => {
+                            console.log('like deleted from db')
+                            res.redirect('/tyds')
+                        }
+                    )
+                } else {
+                    connection.query(
+                        'INSERT INTO likes (tydId, userID) VALUES(?,?)',
+                        [tydId, userID],
+                        (error, results) => {
+                            if(error){
+                                console.log(error)
+                            } else {
+                                console.log('likes updated')
+                                res.redirect('/tyds')
+                            }
+                        }
+                    )
+                }
+                
+            }
+        }
+    )
+
+});
 
 app.get('/login', (req, res) => {
     let user = {
