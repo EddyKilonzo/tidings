@@ -65,12 +65,19 @@ app.get('/tyds', (req, res) => {
     if(res.locals.isLoggedIn) { 
         connection.query(
             'SELECT tyds.id as tydId,tyd,dateposted,fullname,likes,users.id as usersID FROM tyds JOIN users ON tyds.userID = users.id ORDER BY dateposted DESC',
-            (error, results) => {
+            (error, tyds) => {
                 if(error){
                     console.log(error)
                 }else{
-                    res.render('tyds.ejs', {tyds: results})
-                    // console.log(results)
+                    connection.query(
+                        'SELECT * FROM likes WHERE userID = ?',
+                    [req.session.userID],
+                        (error, likes) => {
+                            console.log(likes)
+                            res.render('tyds.ejs', {tyds: tyds, likes: likes})
+                        }
+                    )
+                    
                 }
             }
         )
@@ -93,11 +100,22 @@ app.post('/updatelikes', (req, res) => {
                 if(likes.length > 0) {
                     // remove from db
                     connection.query(
-                        'DELETE FROM likes WHERE tydId =? AND userID =?',
+                        'DELETE FROM likes WHERE tydId = ? AND userID =?',
                         [tydId, userID],
                         (error, results) => {
+                            connection.query(
+                                'UPDATE tyds SET likes = likes -1 WHERE id = ?',
+                                [tydId],
+                                (error, results) => {
+                                    if(error) {
+                                        console.log(error)
+                                    } else {
+                                        res.redirect('/tyds')
+                                    }
+                                }
+                            )
                             console.log('like deleted from db')
-                            res.redirect('/tyds')
+                            
                         }
                     )
                 } else {
@@ -105,11 +123,23 @@ app.post('/updatelikes', (req, res) => {
                         'INSERT INTO likes (tydId, userID) VALUES(?,?)',
                         [tydId, userID],
                         (error, results) => {
+                            connection.query(
+                                'UPDATE tyds SET likes = likes +1 WHERE id = ?',
+                                [tydId],
+                                (error, results) => {
+                                    if(error) {
+                                        console.log(error)
+                                    } else {
+                                        res.redirect('/tyds')
+                                    }
+                                }
+                            )
                             if(error){
                                 console.log(error)
                             } else {
                                 console.log('likes updated')
-                                res.redirect('/tyds')
+                                
+                               
                             }
                         }
                     )
