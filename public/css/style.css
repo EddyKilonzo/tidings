@@ -137,5 +137,8 @@ header .nav-link a {
 }    
 .tyd .likes {
     margin-left: 5px;
-
+}
+.tyd #lower button {
+    border: none;
+    
 }
