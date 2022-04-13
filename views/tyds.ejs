@@ -23,10 +23,16 @@
                         <div >
                             <form action="/updatelikes?tydId=<%=tyd.tydId%>&userID=<%=locals.userID%>" method="post">
                                 <button type="submit">
-                                    <img  id="like" src="/images/icons/heart.svg" alt="">
+                                    <% if(likes.tydId === tyd.tydId) { %>
+                                        <img  id="like" src="/images/icons/heart-fill.svg" alt="">
+                                    <% } else { %> 
+                                        <img  id="like" src="/images/icons/heart.svg" alt="">
+                                    <% } %>       
                                 </button>
                             </form>
-                            <span id="likes">0</span>
+                            <% if(tyd.likes>0) { %>
+                                <span id="likes"><%= tyd.likes %></span>
+                            <% } %>    
                         </div>
                     </div>
                 </div>
