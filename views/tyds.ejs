@@ -4,10 +4,9 @@
         <%- include('partials/nav') %>
 
         <div class="container">
-            <p>Welcome, <%= locals.username %></p>
-
+            <p>Welcome, <%= locals.username %> </p>
+            
             <% for(let tyd of tyds) { %>        
-
                 <% let username = tyd.fullname.split(' ')[0].toLowerCase() %>
                 <% let avatar = Math.floor(Math.random() * 5)%>
 
@@ -19,18 +18,18 @@
                             <p><%= tyd.tyd %></p>
                         </div>
                     </div>
-
                     <div id="lower">
                         <p><%=  tyd.dateposted.toString().split(' ').slice(0,5).join(' ') %> </p>
-                        <div>
-                            <img src="/images/icons/heart.svg" alt="">
-                            <span class="likes"><%= avatar + 15 %></span>
+                        <div >
+                            <form action="/updatelikes?tydId=<%=tyd.tydId%>&userID=<%=locals.userID%>" method="post">
+                                <button type="submit">
+                                    <img  id="like" src="/images/icons/heart.svg" alt="">
+                                </button>
+                            </form>
+                            <span id="likes">0</span>
                         </div>
-                        
                     </div>
-                
                 </div>
-
             <% } %> 
         </div>
 
