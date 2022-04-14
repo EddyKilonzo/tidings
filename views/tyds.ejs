@@ -23,7 +23,7 @@
                         <div >
                             <form action="/updatelikes?tydId=<%=tyd.tydId%>&userID=<%=locals.userID%>" method="post">
                                 <button type="submit">
-                                    <% if(likes.tydId === tyd.tydId) { %>
+                                    <% if(likes.some(like=>tyd.tydId === like.tydId )) { %>
                                         <img  id="like" src="/images/icons/heart-fill.svg" alt="">
                                     <% } else { %> 
                                         <img  id="like" src="/images/icons/heart.svg" alt="">
@@ -40,5 +40,16 @@
         </div>
 
     </main>
+    <script>
+        window.addEventListener('scroll',function() {
+             //When scroll change, you save it on localStorage.
+            localStorage.setItem('scrollPosition',window.scrollY);
+        },false);
+
+        window.addEventListener('load',function() {
+            if(localStorage.getItem('scrollPosition') !== null)
+                window.scrollTo(0, localStorage.getItem('scrollPosition'));
+        },false);
+    </script>
 
 <%- include('partials/footer') %>
