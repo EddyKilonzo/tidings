@@ -114,7 +114,7 @@ app.post('/updatelikes', (req, res) => {
                                     }
                                 }
                             )
-                            console.log('like deleted from db')
+                            
                             
                         }
                     )
@@ -134,13 +134,7 @@ app.post('/updatelikes', (req, res) => {
                                     }
                                 }
                             )
-                            if(error){
-                                console.log(error)
-                            } else {
-                                console.log('likes updated')
-                                
-                               
-                            }
+                            
                         }
                     )
                 }
