@@ -71,9 +71,9 @@ app.get('/tyds', (req, res) => {
                 }else{
                     connection.query(
                         'SELECT * FROM likes WHERE userID = ?',
-                    [req.session.userID],
+                        [req.session.userID],
                         (error, likes) => {
-                            console.log(likes)
+                            // console.log(likes)
                             res.render('tyds.ejs', {tyds: tyds, likes: likes})
                         }
                     )
