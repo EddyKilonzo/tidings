@@ -53,6 +53,7 @@ header .nav-link a {
     font-size: 39px;
     font-weight: lighter;
 }
+
 .access-point, #new-tyd {
     height: 100vh;
 }
@@ -113,29 +114,61 @@ header .nav-link a {
     align-self: center;
     margin-top:10px;
 }
-.tyd {
+.tyd, #tab {
     border-bottom: 1px solid #1383a8;
     width: 50%;
     margin: 0 auto 5px;
 }
-.tyd div {
+.like, #tab {
+    border-bottom: 1px solid #1383a8;
+    width: 50%;
+    margin: 0 auto 5px;
+}
+#tab {
+    border:0;
+    margin-bottom: 8px;
+}
+#tab .tab {
+    font-size: 17px;
+    padding: 0 8px;
+    border: 0;
+    color: #1383a8;
+    background-color: #fff;
+}
+#tab #tyd-tab {
+    border-bottom: 1px solid #1383a8;
+}
+.like {
+    display: none;
+}
+.tyd div, .like div{
     display: flex;
-    margin-bottom: 4px;   
+    margin-bottom: 4px;
     justify-content: space-between;
 }
-.tyd #upper img {
+.tyd #upper img, .like #upper img{
     width: 100px;
     height: 100px;
 }
-.tyd #upper div {
+.tyd #upper div, .like #upper div{
     display: flexbox;
     flex-direction: column;
     margin-left: 5px;
 }
-.tyd #upper p {
+.tyd #upper p, .like #upper p{
     text-align: justify;
 }    
-.tyd .likes {
+.tyd .likes, .like .likes {
     margin-left: 5px;
-
+}
+.tyd #lower button, .like #lower button{
+    border: none;
+}
+#about {
+    background-color: #fff9ffff;
+}
+#about-tyds img {
+    width: 80%;
+    display: block;
+    margin: 0 auto;   
 }
