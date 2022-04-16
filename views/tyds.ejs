@@ -4,13 +4,17 @@
         <%- include('partials/nav') %>
 
         <div class="container">
-            <p>Welcome, <%= locals.username %></p>
+            <p>Welcome, <%= locals.username %> </p>
+
+            <div id="tab">
+                <button class="tab" id="tyd-tab">Tyds</button>
+                <button class="tab" id="like-tab">Liked</button>
+            </div>
+            
 
             <% for(let tyd of tyds) { %>        
-
                 <% let username = tyd.fullname.split(' ')[0].toLowerCase() %>
                 <% let avatar = Math.floor(Math.random() * 5)%>
-
                 <div class="tyd">
                     <div id="upper">
                         <img src="/images/avatars/<%= `${avatar}.png`%>" alt="">
@@ -19,21 +23,76 @@
                             <p><%= tyd.tyd %></p>
                         </div>
                     </div>
-
                     <div id="lower">
-                        <p><%=  tyd.dateposted.toString().split(' ').slice(0,5).join(' ') %> </p>
-                        <div>
-                            <img src="/images/icons/heart.svg" alt="">
-                            <span class="likes"><%= avatar + 15 %></span>
-                        </div>
                         
+                        <div >
+                            <form action="/updatelikes?tydId=<%=tyd.tydId%>&userID=<%=locals.userID%>" method="post">
+                                <button type="submit">
+                                    <% if(likes.some(like=>tyd.tydId === like.tydId )) { %>
+                                        <img  id="like" src="/images/icons/heart-fill.svg" alt="">
+                                    <% } else { %> 
+                                        <img  id="like" src="/images/icons/heart.svg" alt="">
+                                    <% } %>       
+                                </button>
+                            </form>
+                            <% if(tyd.likes>0) { %>
+                                <span class="likes"><%= tyd.likes %></span>
+                            <% } %>    
+                        </div>
+                        <p><%=  tyd.dateposted.toString().split(' ').slice(0,5).join(' ') %> </p>
                     </div>
-                
                 </div>
-
+                <% if((likes.some(like=>tyd.tydId === like.tydId ))) { %>
+                    <div class="like">
+                        <div id="upper">
+                            <img src="/images/avatars/<%= `${avatar}.png`%>" alt="">
+                            <div>
+                                <h3>@<%= username %></h3>
+                                <p><%= tyd.tyd %></p>
+                            </div>
+                        </div>
+                        <div id="lower">
+                            
+                            <div >
+                                <form action="/updatelikes?tydId=<%=tyd.tydId%>&userID=<%=locals.userID%>" method="post">
+                                    <button type="submit">
+                                        <% if(likes.some(like=>tyd.tydId === like.tydId )) { %>
+                                            <img  id="like" src="/images/icons/heart-fill.svg" alt="">
+                                        <% } else { %> 
+                                            <img  id="like" src="/images/icons/heart.svg" alt="">
+                                        <% } %>       
+                                    </button>
+                                </form>
+                                <% if(tyd.likes>0) { %>
+                                    <span class="likes"><%= tyd.likes %></span>
+                                <% } %>    
+                            </div>
+                            <p><%=  tyd.dateposted.toString().split(' ').slice(0,5).join(' ') %> </p>
+                        </div>
+                    </div>
+                <% } %>    
             <% } %> 
         </div>
+        
 
     </main>
+    <script>
+        let tyds = document.querySelectorAll('.tyd')
+        let likes = document.querySelectorAll('.like')
+        let tabs = document.querySelectorAll('.tab')
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                if(tab.textContent === 'Tyds') {
+                    tyds.forEach(tyd => tyd.style.display = 'block')
+                    likes.forEach(like => like.style.display = 'none')
+                } else {
+                    tyds.forEach(tyd => tyd.style.display = 'none')
+                    likes.forEach(like => like.style.display = 'block')
+                }
+                tabs.forEach(tab => tab.style.border = 0)
+                tab.style.borderBottom = '1px solid #1383a8';
+            })
+        })
+    </script>
 
 <%- include('partials/footer') %>
